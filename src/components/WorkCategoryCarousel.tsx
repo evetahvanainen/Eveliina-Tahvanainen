@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { getCategorySubtext, withAllProductsCategory } from '@/lib/shop-categories';
 
 type ShopifyCollection = {
   id: string;
@@ -21,12 +22,14 @@ const SCROLL_SPEED = 520; // px/sec
 
 // ✅ Your preferred order (by handle)
 const PREFERRED_CATEGORY_ORDER = [
+  'all-products',
   'mugs',
   'bowls',
   'tableware',
   'vases',
   'glass',
   'sculptures',
+  'workshops',
 ] as const;
 
 function sortByPreferredOrder<T extends { handle: string }>(items: T[]) {
@@ -86,7 +89,7 @@ export default function WorkCategoryCarousel() {
           | { collections?: ShopifyCollection[] };
         const list = Array.isArray(data) ? data : (data.collections ?? []);
 
-        const mapped: Category[] = list
+        const mapped: Category[] = withAllProductsCategory(list)
           .filter((c) => c?.handle && c?.title)
           .map((c) => ({
             handle: c.handle,
@@ -263,6 +266,9 @@ export default function WorkCategoryCarousel() {
                 </span>
               </div>
             </figure>
+            <p className="py-3 text-center text-[0.75rem] tracking-[0.14em] text-text/55">
+              {getCategorySubtext(category.handle)}
+            </p>
           </Link>
         ))}
       </div>
@@ -323,9 +329,12 @@ export default function WorkCategoryCarousel() {
 
                 <div className="absolute inset-0 bg-white/10" aria-hidden="true" />
 
-                <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white/0 opacity-0 transition-all duration-700 ease-out group-hover:bg-white/45 group-hover:opacity-100">
+                <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center bg-white/0 opacity-0 transition-all duration-700 ease-out group-hover:bg-white/45 group-hover:opacity-100">
                   <span className="text-3xl lowercase tracking-[0.14em] md:text-4xl">
                     {category.title}
+                  </span>
+                  <span className="mt-3 text-[0.85rem] tracking-[0.16em] text-text/70">
+                    {getCategorySubtext(category.handle)}
                   </span>
                 </div>
               </figure>

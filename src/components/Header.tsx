@@ -6,14 +6,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
 
-const THRESHOLD = 260;
-
 export default function Header() {
   const pathname = usePathname();
-  const isHome = pathname === '/';
   const { itemCount, toggleCart } = useCart();
 
-  const [pastThreshold, setPastThreshold] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   // ✅ hydration guard
@@ -24,24 +20,9 @@ export default function Header() {
 
   const isActive = (href: string) => pathname === href;
 
-  useEffect(() => {
-    if (!isHome) return;
-
-    const onScroll = () => setPastThreshold(window.scrollY > THRESHOLD);
-    const raf = window.requestAnimationFrame(onScroll);
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => {
-      window.cancelAnimationFrame(raf);
-      window.removeEventListener('scroll', onScroll);
-    };
-  }, [isHome]);
-
-  const showSticky = !isHome || pastThreshold;
-
   return (
     <>
-      <header className={`${showSticky ? 'fixed' : 'hidden'} inset-x-0 top-0 z-50`}>
+      <header className="fixed inset-x-0 top-0 z-50">
         <div className="bg-white/80 backdrop-blur-[2px]">
           <div className="px-3 py-1.5">
             {/* DESKTOP */}

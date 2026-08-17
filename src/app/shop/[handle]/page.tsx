@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ALL_PRODUCTS_HANDLE } from '@/lib/shop-categories';
 
 type ShopifyImage = { url: string; altText: string | null };
 
@@ -30,16 +31,29 @@ export default function CollectionPage() {
 
     (async () => {
       try {
-        const res = await fetch(`/api/collection/${handle}`);
-        const json = await res.json();
+        if (handle === ALL_PRODUCTS_HANDLE) {
+          const res = await fetch('/api/products');
+          const json = await res.json();
 
-        if (!json.ok) {
-          console.error(json.error);
-          setItems([]);
-          return;
+          if (!json.ok) {
+            console.error(json.error);
+            setItems([]);
+            return;
+          }
+
+          setItems(json.products ?? []);
+        } else {
+          const res = await fetch(`/api/collection/${handle}`);
+          const json = await res.json();
+
+          if (!json.ok) {
+            console.error(json.error);
+            setItems([]);
+            return;
+          }
+
+          setItems(json.collection?.products?.nodes ?? []);
         }
-
-        setItems(json.collection?.products?.nodes ?? []);
       } catch (e) {
         console.error(e);
         setItems([]);

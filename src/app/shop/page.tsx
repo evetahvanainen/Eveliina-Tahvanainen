@@ -4,6 +4,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
+import { getCategorySubtext, withAllProductsCategory } from '@/lib/shop-categories';
 
 type Collection = {
   id: string;
@@ -14,12 +15,14 @@ type Collection = {
 
 // preferred order
 const PREFERRED_CATEGORY_ORDER = [
+  'all-products',
   'mugs',
   'bowls',
   'tableware',
   'vases',
   'glass',
   'sculptures',
+  'workshops',
 ] as const;
 
 function sortByPreferredOrder<T extends { handle: string }>(items: T[]) {
@@ -62,7 +65,7 @@ export default function ShopPage() {
   }, []);
 
   const orderedCollections = useMemo(() => {
-    return sortByPreferredOrder(collections);
+    return sortByPreferredOrder(withAllProductsCategory(collections));
   }, [collections]);
 
   if (loading) {
@@ -138,6 +141,9 @@ export default function ShopPage() {
                 →
               </div>
             </figure>
+            <p className="mt-3 text-center text-[0.7rem] tracking-[0.16em] text-text/55">
+              {getCategorySubtext(c.handle)}
+            </p>
           </Link>
         ))}
       </section>

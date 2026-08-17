@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
+import { ALL_PRODUCTS_HANDLE } from '@/lib/shop-categories';
 
 type ShopifyOption = { name: string; values: string[] };
 
@@ -94,6 +95,21 @@ export default function ProductPage() {
 
     (async () => {
       try {
+        if (collectionHandle === ALL_PRODUCTS_HANDLE) {
+          const res = await fetch('/api/products');
+          const json = await res.json();
+
+          if (!json.ok) {
+            setRelated([]);
+            return;
+          }
+
+          const nodes: RelatedProduct[] = json.products ?? [];
+          const filtered = nodes.filter((p) => p.handle !== productHandle).slice(0, 4);
+          setRelated(filtered);
+          return;
+        }
+
         const res = await fetch(`/api/collection/${collectionHandle}`);
         const json = await res.json();
 

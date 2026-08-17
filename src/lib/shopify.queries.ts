@@ -9,14 +9,14 @@ export const PRODUCTS_QUERY = /* GraphQL */ `
           handle
           title
           description
-          images(first: 1) {
-            edges {
-              node {
-                url
-                altText
-                width
-                height
-              }
+          featuredImage {
+            url
+            altText
+          }
+          images(first: 2) {
+            nodes {
+              url
+              altText
             }
           }
           priceRange {
