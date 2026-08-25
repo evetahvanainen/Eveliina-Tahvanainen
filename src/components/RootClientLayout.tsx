@@ -5,6 +5,7 @@ import { CartProvider } from '@/context/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CartDrawer from '@/components/CartDrawer';
+import CookieNotice from '@/components/CookieNotice';
 
 export function RootClientLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,6 +14,7 @@ export function RootClientLayout({ children }: { children: React.ReactNode }) {
       <CartDrawer />
       {children}
       <Footer />
+      <CookieNotice />
     </CartProvider>
   );
 }
